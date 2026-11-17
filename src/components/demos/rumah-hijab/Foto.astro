@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { fotoAlt } from '../../../data/rumah-hijab';
+
+interface Props {
+  slug: string;
+  class?: string;
+  widths?: number[];
+  sizes?: string;
+  prioritas?: boolean;
+  alt?: string;
+}
+
+const {
+  slug,
+  class: className,
+  widths = [240, 480, 720],
+  sizes = '(min-width: 1024px) 320px, 45vw',
+  prioritas = false,
+  alt,
+} = Astro.props;
+
+/* Semua foto diimpor sekaligus; Astro mengubahnya jadi WebP beberapa ukuran
+   saat build dan menanam lebar-tinggi di HTML supaya tata letak tidak
+   bergeser saat foto selesai dimuat. */
+const berkas = import.meta.glob<{ default: ImageMetadata }>(
+  '../../../assets/rumah-hijab/*.jpg',
+  { eager: true },
+);
+
+const foto = berkas[`../../../assets/rumah-hijab/${slug}.jpg`]?.default;
+const teks = alt ?? fotoAlt[slug] ?? '';
+---
+
+{
+  foto ? (
+    <div class:list={['overflow-hidden bg-surface-alt', className]}>
+      <Image
+        src={foto}
+        alt={teks}
+        widths={widths}
+        sizes={sizes}
+        loading={prioritas ? 'eager' : 'lazy'}
+        decoding={prioritas ? 'sync' : 'async'}
+        fetchpriority={prioritas ? 'high' : 'auto'}
+        class="h-full w-full object-cover"
+      />
+    </div>
+  ) : (
+    <div class:list={['bg-surface-alt', className]} role="img" aria-label={teks} />
+  )
+}

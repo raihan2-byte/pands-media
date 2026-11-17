@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { fotoAlt } from '../../../data/kencana-print';
+
+interface Props {
+  /** Slug produk, dipakai untuk mencari berkas foto. */
+  slug: string;
+  /** Kelas untuk kotak pembungkus, mis. "aspect-4/3 rounded-card". */
+  class?: string;
+  /** Daftar lebar yang dibuatkan Astro. */
+  widths?: number[];
+  sizes?: string;
+  /** Foto pertama di layar dimuat lebih awal supaya LCP cepat. */
+  prioritas?: boolean;
+  /** Teks alternatif pengganti kalau slug tidak ada di daftar. */
+  alt?: string;
+}
+
+const {
+  slug,
+  class: className,
+  widths = [240, 480, 720],
+  sizes = '(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw',
+  prioritas = false,
+  alt,
+} = Astro.props;
+
+/*
+  Semua foto diimpor sekaligus. Astro mengoptimalkan tiap berkas saat build:
+  diubah ke format modern, dibuat beberapa ukuran, lalu diberi nama ber-hash.
+  Lebar dan tinggi ikut tertanam di HTML, jadi tata letak tidak bergeser
+  saat foto selesai dimuat.
+*/
+const berkas = import.meta.glob<{ default: ImageMetadata }>(
+  '../../../assets/kencana-print/*.jpg',
+  { eager: true },
+);
+
+const kunci = `../../../assets/kencana-print/${slug}.jpg`;
+const foto = berkas[kunci]?.default;
+const teks = alt ?? fotoAlt[slug] ?? '';
+---
+
+{
+  foto ? (
+    <div class:list={['overflow-hidden bg-surface-alt', className]}>
+      <Image
+        src={foto}
+        alt={teks}
+        widths={widths}
+        sizes={sizes}
+        loading={prioritas ? 'eager' : 'lazy'}
+        decoding={prioritas ? 'sync' : 'async'}
+        fetchpriority={prioritas ? 'high' : 'auto'}
+        class="h-full w-full object-cover"
+      />
+    </div>
+  ) : (
+    /* Tanpa berkas foto, kotaknya tetap ada supaya tata letak tidak berubah. */
+    <div
+      class:list={['bg-surface-alt', className]}
+      role="img"
+      aria-label={teks || 'Foto produk belum tersedia'}
+    />
+  )
+}

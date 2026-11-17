@@ -1,0 +1,190 @@
+---
+interface Props {
+  kategori: string;
+  brandToken: string;
+  domainPalsu?: string;
+}
+
+const { kategori, brandToken, domainPalsu } = Astro.props;
+
+/*
+  Pratinjau dibangun dari div, bukan gambar.
+  Alasannya tiga: tidak ada aset yang perlu dibuat, ukuran halaman tidak
+  bertambah, dan tinggi kotaknya sudah pasti sejak awal sehingga tidak ada
+  pergeseran tata letak saat halaman dimuat.
+
+  `data-brand` membuat tiap pratinjau memakai warna demonya sendiri.
+*/
+const bar = 'rounded-[2px] bg-ink/15';
+const barBrand = 'rounded-[2px] bg-brand';
+---
+
+<div
+  data-brand={brandToken}
+  class="overflow-hidden rounded-t-card border-b border-line bg-surface-alt"
+  aria-hidden="true"
+>
+  {/* Chrome browser palsu, memberi konteks bahwa ini situs. */}
+  <div class="flex items-center gap-1.5 border-b border-line bg-surface px-3 py-2">
+    <span class="size-2 rounded-full bg-ink/15"></span>
+    <span class="size-2 rounded-full bg-ink/15"></span>
+    <span class="size-2 rounded-full bg-ink/15"></span>
+    <span class="ml-2 truncate text-[10px] text-ink-muted">{domainPalsu ?? 'demo'}</span>
+  </div>
+
+  <div class="aspect-16/10 bg-surface p-3">
+    {
+      kategori === 'Katalog & Pemesanan' && (
+        <div class="flex h-full flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class={`h-2 w-14 ${barBrand}`} />
+            <span class="flex gap-1">
+              <span class={`h-1.5 w-6 ${bar}`} />
+              <span class={`h-1.5 w-6 ${bar}`} />
+            </span>
+          </div>
+          <div class="rounded-[3px] bg-brand-soft p-2">
+            <span class={`block h-2 w-2/3 ${barBrand}`} />
+            <span class={`mt-1 block h-1.5 w-1/2 ${bar}`} />
+          </div>
+          <div class="grid flex-1 grid-cols-3 gap-1.5">
+            {[0, 1, 2].map(() => (
+              <div class="flex flex-col gap-1 rounded-[3px] border border-line p-1.5">
+                <span class="block flex-1 rounded-[2px] bg-brand/15" />
+                <span class={`block h-1 w-full ${bar}`} />
+                <span class={`block h-1 w-2/3 ${barBrand}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      kategori === 'Aplikasi Kasir' && (
+        <div class="grid h-full grid-cols-[1.6fr_1fr] gap-2">
+          <div class="grid grid-cols-3 grid-rows-3 gap-1.5">
+            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <span
+                class:list={[
+                  'rounded-[3px]',
+                  i % 4 === 0 ? 'bg-brand/25' : 'bg-ink/8 border border-line',
+                ]}
+              />
+            ))}
+          </div>
+          <div class="flex flex-col gap-1.5 rounded-[3px] border border-line p-2">
+            <span class={`h-1.5 w-2/3 ${bar}`} />
+            <span class={`h-1.5 w-full ${bar}`} />
+            <span class={`h-1.5 w-3/4 ${bar}`} />
+            <span class="mt-auto block h-px w-full bg-line" />
+            <span class={`h-2.5 w-full ${barBrand}`} />
+          </div>
+        </div>
+      )
+    }
+
+    {
+      kategori === 'Aplikasi Inventory' && (
+        <div class="flex h-full flex-col gap-2">
+          <div class="flex items-center gap-1.5">
+            <span class={`h-2 w-16 ${barBrand}`} />
+            <span class={`ml-auto h-2 w-10 ${bar}`} />
+          </div>
+          <div class="flex-1 overflow-hidden rounded-[3px] border border-line">
+            {/* Baris judul tabel, memakai warna brand supaya terbaca sebagai data. */}
+            <div class="grid grid-cols-[1fr_auto_auto] items-center gap-x-2 bg-brand/15 px-2 py-1.5">
+              <span class="h-1.5 w-12 rounded-[2px] bg-brand" />
+              <span class="h-1.5 w-6 rounded-[2px] bg-brand/60" />
+              <span class="h-1.5 w-5 rounded-[2px] bg-brand/60" />
+            </div>
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                class:list={[
+                  'grid grid-cols-[1fr_auto_auto] items-center gap-x-2 border-t border-line px-2 py-1.5',
+                  i % 2 === 1 && 'bg-ink/[0.03]',
+                ]}
+              >
+                <span class={`h-1.5 ${bar}`} />
+                <span class={`h-1.5 w-6 ${bar}`} />
+                {/* Satu baris ditandai merah: stok di bawah batas minimum. */}
+                <span
+                  class:list={[
+                    'h-1.5 w-5 rounded-[2px]',
+                    i === 1 ? 'bg-brand' : 'bg-ink/15',
+                  ]}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      kategori === 'E-commerce' && (
+        <div class="flex h-full flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class={`h-2 w-16 ${barBrand}`} />
+            <span class="size-3 rounded-full bg-brand/25" />
+          </div>
+          <div class="grid flex-1 grid-cols-2 gap-1.5">
+            {[0, 1, 2, 3].map(() => (
+              <div class="flex gap-1.5 rounded-[3px] border border-line p-1.5">
+                <span class="block w-1/3 rounded-[2px] bg-brand/15" />
+                <span class="flex flex-1 flex-col gap-1">
+                  <span class={`h-1 w-full ${bar}`} />
+                  <span class={`h-1 w-1/2 ${barBrand}`} />
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      kategori === 'Company Profile' && (
+        <div class="flex h-full flex-col gap-2">
+          <div class="flex items-center justify-between">
+            <span class={`h-2 w-14 ${barBrand}`} />
+            <span class="flex gap-1">
+              <span class={`h-1.5 w-5 ${bar}`} />
+              <span class={`h-1.5 w-5 ${bar}`} />
+              <span class={`h-1.5 w-5 ${bar}`} />
+            </span>
+          </div>
+          <div class="flex flex-1 flex-col justify-center rounded-[3px] bg-brand/10 p-3">
+            <span class={`h-2.5 w-3/4 ${barBrand}`} />
+            <span class={`mt-1.5 h-1.5 w-1/2 ${bar}`} />
+          </div>
+          <div class="grid grid-cols-3 gap-1.5">
+            {[0, 1, 2].map(() => (
+              <span class={`h-1.5 ${bar}`} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      kategori === 'Dashboard' && (
+        <div class="flex h-full flex-col gap-2">
+          <div class="grid grid-cols-3 gap-1.5">
+            {[0, 1, 2].map(() => (
+              <div class="rounded-[3px] border border-line p-1.5">
+                <span class={`block h-1 w-2/3 ${bar}`} />
+                <span class={`mt-1 block h-2 w-1/2 ${barBrand}`} />
+              </div>
+            ))}
+          </div>
+          <div class="flex flex-1 items-end gap-1 rounded-[3px] border border-line p-2">
+            {[40, 65, 50, 80, 35, 70].map((h) => (
+              <span class="flex-1 rounded-t-[2px] bg-brand/30" style={`height:${h}%`} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</div>

@@ -1,0 +1,83 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import DemoLayout from '../../../layouts/DemoLayout.astro';
+import Aplikasi from '../../../components/demos/warung-maju/Aplikasi.tsx';
+import { warung, produkAwal } from '../../../data/warung-maju';
+
+/*
+  Foto barang dioptimalkan di sini, bukan di dalam komponen React.
+  `getImage` menghasilkan berkas WebP kecil saat build, lalu yang dikirim ke
+  pulau React hanya alamatnya. Dengan begitu React tidak perlu tahu apa pun
+  soal pengolahan gambar, dan tidak ada JPG asli yang ikut terkirim.
+
+  Ukurannya 160 piksel karena di layar ubinnya cuma 64 piksel — cukup tajam
+  untuk layar beresolusi tinggi, tetap ringan untuk tablet kasir murah.
+*/
+const berkas = import.meta.glob<{ default: ImageMetadata }>(
+  '../../../assets/warung-maju/*.jpg',
+  { eager: true },
+);
+
+const foto: Record<string, string> = {};
+for (const b of produkAwal) {
+  if (!b.berkas) continue;
+  const sumber = berkas[`../../../assets/warung-maju/${b.berkas}.jpg`]?.default;
+  if (!sumber) continue;
+  const hasil = await getImage({
+    src: sumber,
+    width: 160,
+    height: 160,
+    format: 'webp',
+    quality: 70,
+  });
+  foto[b.kode] = hasil.src;
+}
+---
+
+<DemoLayout
+  brand={warung.nama}
+  brandToken="warung-maju"
+  domainPalsu={warung.domain}
+  title="Kasir"
+  description="Aplikasi kasir Warung Maju untuk admin dan kasir: penjualan, struk, produk, promo, laporan."
+>
+  {/* client:only karena isi awal (transaksi contoh, waktu) dibuat relatif terhadap
+      jam saat ini; dirender di server akan beda dengan di browser. */}
+  <Aplikasi client:only="react" foto={foto}>
+    <div slot="fallback" class="grid min-h-[60dvh] place-items-center text-sm text-ink-muted">
+      Memuat aplikasi kasir…
+    </div>
+  </Aplikasi>
+</DemoLayout>
+
+<style is:global>
+  /*
+    Saat dicetak, hanya struk yang ikut keluar.
+    Ini membuat tombol "Cetak" di layar struk benar-benar berguna, bukan
+    sekadar hiasan.
+  */
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #struk,
+    #struk * {
+      visibility: visible;
+    }
+
+    #struk {
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 72mm;
+      padding: 4mm;
+      font-size: 11px;
+      color: #000;
+    }
+
+    @page {
+      margin: 0;
+    }
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+import type { Proyek } from '../../../data/bangun-karya';
+import { jenisProyek } from '../../../data/bangun-karya';
+import Foto from './Foto.astro';
+
+interface Props {
+  proyek: Proyek;
+  besar?: boolean;
+}
+
+const { proyek: p, besar = false } = Astro.props;
+const jenis = jenisProyek.find((j) => j.slug === p.jenis)!.nama;
+---
+
+<article class="group relative flex flex-col bg-surface">
+  <div class="relative overflow-hidden">
+    <Foto
+      nama={p.foto}
+      class:list={[besar ? 'aspect-16/10' : 'aspect-4/3']}
+      widths={[480, 800, 1200]}
+      sizes={besar ? '(min-width: 1024px) 66vw, 100vw' : '(min-width: 1024px) 33vw, 100vw'}
+    />
+    <span
+      class="absolute top-0 left-0 bg-brand px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-white uppercase"
+    >
+      {jenis}
+    </span>
+  </div>
+
+  <div class="flex flex-1 flex-col border-x border-b border-line p-5">
+    <h3 class:list={['font-display leading-tight font-bold uppercase', besar ? 'text-3xl' : 'text-2xl']}>
+      <a
+        href={`/porto/bangun-karya/proyek/${p.slug}`}
+        class="after:absolute after:inset-0 after:content-['']"
+      >
+        {p.nama}
+      </a>
+    </h3>
+    <p class="mt-1 text-sm text-ink-muted">{p.lokasi} · {p.tahun}</p>
+    <p class="mt-3 text-sm text-ink-muted">{p.ringkas}</p>
+
+    <dl class="tabular mt-auto grid grid-cols-3 gap-3 border-t border-line pt-4 text-sm">
+      <div>
+        <dt class="text-[11px] tracking-wide text-ink-muted uppercase">Luas</dt>
+        <dd class="font-semibold">{p.luas}</dd>
+      </div>
+      <div>
+        <dt class="text-[11px] tracking-wide text-ink-muted uppercase">Durasi</dt>
+        <dd class="font-semibold">{p.durasi}</dd>
+      </div>
+      <div>
+        <dt class="text-[11px] tracking-wide text-ink-muted uppercase">Tahun</dt>
+        <dd class="font-semibold">{p.tahun}</dd>
+      </div>
+    </dl>
+  </div>
+</article>

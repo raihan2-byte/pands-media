@@ -1,0 +1,52 @@
+---
+import { site, navUtama } from '../../site';
+
+const tahun = new Date().getFullYear();
+---
+
+<footer class="border-t border-line py-10">
+  <div class="wrap">
+    <div class="flex flex-col gap-8 sm:flex-row sm:justify-between">
+      <div class="max-w-xs">
+        <p class="flex items-center gap-2 font-display text-lg font-extrabold">
+          <span class="size-2.5 rounded-full bg-linear-to-br from-brand-light to-brand" aria-hidden="true"></span>
+          {site.nama}
+        </p>
+        <p class="mt-2 text-sm text-ink-muted">{site.tagline}. {site.kota}.</p>
+      </div>
+
+      <nav aria-label="Navigasi footer" class="flex flex-col gap-2 text-sm">
+        <a href="/" class="py-1 text-ink-muted hover:text-ink">Beranda</a>
+        {
+          navUtama.map((item) => (
+            <a href={item.href} class="py-1 text-ink-muted hover:text-ink">
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex flex-col gap-2 text-sm">
+        <a href={`mailto:${site.email}`} class="py-1 text-ink-muted hover:text-ink">
+          {site.email}
+        </a>
+        <a
+          href={`https://wa.me/${site.whatsapp}`}
+          target="_blank"
+          rel="noopener"
+          class="py-1 text-ink-muted hover:text-ink"
+        >
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-8 border-t border-line pt-6 text-xs text-ink-muted">
+      <p>
+        Semua demo di portofolio memakai nama usaha dan data fiktif. Tidak ada
+        pesanan atau pembayaran yang benar-benar diproses di dalamnya.
+      </p>
+      <p class="mt-2">&copy; {tahun} {site.nama}.</p>
+    </div>
+  </div>
+</footer>

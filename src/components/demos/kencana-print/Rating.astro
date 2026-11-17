@@ -1,0 +1,31 @@
+---
+interface Props {
+  nilai: number;
+  ulasan: number;
+  class?: string;
+}
+
+const { nilai, ulasan, class: className } = Astro.props;
+const penuh = Math.round(nilai);
+---
+
+{/*
+  Angka ditulis apa adanya di samping bintang, bukan hanya warna bintang.
+  Pembaca layar dan orang yang sulit membedakan warna tetap dapat nilainya.
+*/}
+<p class:list={['flex items-center gap-1.5 text-xs text-ink-muted', className]}>
+  <span class="flex" aria-hidden="true">
+    {
+      [1, 2, 3, 4, 5].map((i) => (
+        <svg
+          viewBox="0 0 20 20"
+          class:list={['size-3.5', i <= penuh ? 'fill-accent' : 'fill-ink/15']}
+        >
+          <path d="M10 1.8l2.4 5 5.5.8-4 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4-4-3.8 5.5-.8 2.4-5z" />
+        </svg>
+      ))
+    }
+  </span>
+  <span class="tabular">{nilai.toFixed(1)}</span>
+  <span>({ulasan.toLocaleString('id-ID')})</span>
+</p>

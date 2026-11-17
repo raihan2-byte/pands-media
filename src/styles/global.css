@@ -1,0 +1,172 @@
+@import 'tailwindcss';
+
+/* Font self-hosted. Tidak ada permintaan ke CDN saat halaman dibuka. */
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fontsource-variable/inter';
+
+@import './brands.css';
+
+/*
+  Gaya: Swiss / Minimalism. Latar netral, grid tegas, satu warna aksen.
+  Alasan: halaman ini etalase karya. Warna tiap demo yang harus menonjol,
+  bukan warna Pands Media.
+
+  Tailwind v4 CSS-first: tiap entri @theme otomatis jadi utility class
+  sekaligus CSS variable. `--color-brand` dipakai sebagai `bg-brand`,
+  `text-brand`, `border-brand`.
+*/
+@theme {
+  /*
+    Palet Pands Media.
+    #5E17EB ungu tua, #9E51FF ungu muda, #46F4F4 sian, #F5F5F5 abu, #0A0A0A hitam.
+
+    Catatan kontras, penting saat memakainya:
+    - brand (#5E17EB) aman sebagai teks di atas putih, 8,6:1.
+    - brand-light (#9E51FF) hanya 3,9:1. Pakai untuk judul besar, garis,
+      gradasi, atau latar — jangan untuk teks kecil di atas putih.
+    - accent (#46F4F4) terlalu terang untuk jadi teks di atas putih. Pakai
+      sebagai latar dengan teks gelap, atau sebagai sorotan di atas ungu tua.
+  */
+  --color-brand: #5e17eb;
+  --color-brand-light: #9e51ff;
+  --color-brand-soft: #f1eafe;
+  --color-brand-strong: #4a11bd;
+
+  /* Warna kedua. Demo boleh menimpanya lewat brands.css. */
+  --color-accent: #46f4f4;
+  --color-accent-soft: #e8fdfd;
+  --color-accent-strong: #0a4f4f;
+
+  /* Teks dan permukaan. */
+  --color-ink: #0a0a0a;
+  --color-ink-muted: #5c5c66;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f5f5f5;
+  --color-line: #e4e4e8;
+  --color-line-strong: #c9c9d1;
+
+  /* WhatsApp. Warna tetap, supaya tombolnya langsung dikenali. */
+  --color-wa: oklch(0.6 0.15 150);
+  --color-wa-strong: oklch(0.5 0.14 150);
+
+  /* Tipografi. Plus Jakarta Sans dirancang untuk identitas Jakarta —
+     cocok untuk pasar Indonesia. Inter untuk badan teks. */
+  --font-display: var(
+    --brand-font-display,
+    'Plus Jakarta Sans Variable',
+    ui-sans-serif,
+    system-ui,
+    sans-serif
+  );
+  --font-body: var(--brand-font-body, 'Inter Variable', ui-sans-serif, system-ui, sans-serif);
+
+  /* Radius per brand. Demo bisa jadi kotak atau bulat tanpa ubah komponen. */
+  --radius-card: var(--brand-radius-card, 0.75rem);
+  --radius-control: var(--brand-radius-control, 0.5rem);
+
+  /* Bayangan tipis. Swiss style: garis lebih dulu, bayangan seperlunya. */
+  --shadow-card: 0 1px 2px oklch(0.19 0.012 266 / 0.04);
+  --shadow-card-hover: 0 8px 24px oklch(0.19 0.012 266 / 0.1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Header melekat setinggi 4rem. Target anchor jangan tersembunyi di baliknya. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Fokus keyboard harus terlihat di atas latar apa pun. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Angka harga sejajar antar baris. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Lebar isi seragam di semua bagian halaman. */
+  .wrap {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+}
+
+/*
+  Gerakan masuk untuk panel dan lembar.
+  Arahnya mengikuti tempat panelnya muncul: dari kanan untuk panel samping,
+  dari bawah untuk lembar. Aturan prefers-reduced-motion di @layer base
+  sudah mematikannya untuk yang tidak tahan gerakan.
+*/
+@keyframes masuk-kanan {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes masuk-bawah {
+  from {
+    transform: translateY(2rem);
+    opacity: 0;
+  }
+}
+
+.masuk-kanan {
+  animation: masuk-kanan 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.masuk-bawah {
+  animation: masuk-bawah 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}

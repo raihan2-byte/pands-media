@@ -1,0 +1,56 @@
+---
+import type { Produk } from '../../../data/kencana-print';
+import { rupiah, labelSatuan } from '../../../data/kencana-print';
+import ProductPhoto from './ProductPhoto.astro';
+import Rating from './Rating.astro';
+
+interface Props {
+  produk: Produk;
+  /** Dipakai di rail geser supaya kartunya punya lebar tetap. */
+  tetap?: boolean;
+}
+
+const { produk: p, tetap = false } = Astro.props;
+const base = '/porto/kencana-print';
+---
+
+<article
+  class:list={[
+    'group relative flex flex-col overflow-hidden rounded-card border border-line bg-surface',
+    'transition-shadow duration-200 hover:shadow-card-hover motion-reduce:transition-none',
+    tetap && 'w-[13.5rem] shrink-0 sm:w-56',
+  ]}
+>
+  <div class="relative">
+    <ProductPhoto slug={p.slug} class="aspect-4/3" />
+    {
+      p.promo && (
+        <span class="absolute top-2 left-2 rounded-full bg-accent px-2.5 py-1 text-[11px] font-bold text-accent-strong">
+          {p.promo}
+        </span>
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col p-3">
+    <h3 class="text-sm leading-snug font-bold">
+      <a
+        href={`${base}/produk/${p.slug}`}
+        class="after:absolute after:inset-0 after:content-['']"
+      >
+        {p.nama}
+      </a>
+    </h3>
+
+    <Rating nilai={p.rating} ulasan={p.ulasan} class="mt-1.5" />
+
+    <p class="mt-auto pt-3">
+      <span class="tabular font-display text-lg font-extrabold text-brand-strong">
+        {rupiah(p.harga)}
+      </span>
+      <span class="text-xs text-ink-muted">{labelSatuan[p.satuan]}</span>
+    </p>
+
+    <p class="mt-1 text-[11px] text-ink-muted">{p.lamaKerja}</p>
+  </div>
+</article>

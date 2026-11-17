@@ -1,0 +1,37 @@
+---
+import { waLink } from '../../site';
+
+interface Props {
+  brand: string;
+  domainPalsu?: string;
+}
+
+const { brand, domainPalsu } = Astro.props;
+const pesan = `Halo Pands Media, saya tertarik dengan demo ${brand}. Bisa dibuatkan yang seperti itu?`;
+---
+
+{/* Bar tetap di atas tiap demo: jalan kembali ke katalog plus satu CTA. */}
+<div
+  class="fixed inset-x-0 top-0 z-50 flex h-11 items-center justify-between gap-3 bg-ink px-3 text-xs text-white sm:px-4"
+>
+  <a
+    href="/porto"
+    class="flex shrink-0 items-center gap-1.5 rounded-control px-1.5 py-1 font-medium hover:underline"
+  >
+    <span aria-hidden="true">&larr;</span>
+    <span>Katalog</span>
+  </a>
+
+  <p class="hidden min-w-0 truncate text-white/60 sm:block">
+    Demo Pands Media &middot; {domainPalsu ?? brand}
+  </p>
+
+  <a
+    href={waLink(pesan)}
+    target="_blank"
+    rel="noopener"
+    class="shrink-0 rounded-full bg-brand px-3 py-1.5 font-semibold text-white hover:bg-brand-strong"
+  >
+    Mau yang seperti ini?
+  </a>
+</div>

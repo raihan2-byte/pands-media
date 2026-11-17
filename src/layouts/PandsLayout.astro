@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import Header from '../components/pands/Header.astro';
+import Footer from '../components/pands/Footer.astro';
+import { site } from '../site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Set true di beranda supaya judul tidak jadi "Pands Media — Pands Media". */
+  rootTitle?: boolean;
+}
+
+const { title, description = site.deskripsi, rootTitle = false } = Astro.props;
+const judul = rootTitle ? title : `${title} — ${site.nama}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url);
+---
+
+<!doctype html>
+<html lang="id" data-brand="pands">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{judul}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={judul} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content={site.nama} />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a
+      href="#isi"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-control focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+    >
+      Lompat ke isi
+    </a>
+
+    <Header />
+
+    <main id="isi">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

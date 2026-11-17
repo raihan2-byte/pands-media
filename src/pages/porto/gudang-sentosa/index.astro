@@ -1,0 +1,24 @@
+---
+/* Fira Sans + Fira Code hanya dimuat di halaman ini, bukan di seluruh situs.
+   Keduanya memberi Gudang Sentosa suara tipografi sendiri: angka monospace
+   yang berbaris lurus di kolom tabel. */
+import '@fontsource/fira-sans/400.css';
+import '@fontsource/fira-sans/500.css';
+import '@fontsource/fira-sans/600.css';
+import '@fontsource-variable/fira-code';
+import DemoLayout from '../../../layouts/DemoLayout.astro';
+import Inventaris from '../../../components/demos/gudang-sentosa/Inventaris.tsx';
+import { gudang } from '../../../data/gudang-sentosa';
+---
+
+<DemoLayout
+  brand={gudang.nama}
+  brandToken="gudang-sentosa"
+  domainPalsu={gudang.domain}
+  title="Stok Gudang"
+  description="Pencatatan stok Gudang Sentosa: barang masuk, barang keluar, dan peringatan stok menipis."
+>
+  {/* Seluruh layar satu pulau React supaya stok, riwayat, dan angka
+      ringkas membaca sumber data yang sama. */}
+  <Inventaris client:load />
+</DemoLayout>

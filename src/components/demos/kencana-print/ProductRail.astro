@@ -1,0 +1,42 @@
+---
+import type { Produk } from '../../../data/kencana-print';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  judul: string;
+  keterangan?: string;
+  produk: Produk[];
+  lihatSemua?: string;
+}
+
+const { judul, keterangan, produk, lihatSemua } = Astro.props;
+---
+
+<section class="wrap py-6">
+  <div class="flex items-end justify-between gap-4">
+    <div>
+      <h2 class="text-xl sm:text-2xl">{judul}</h2>
+      {keterangan && <p class="mt-1 text-sm text-ink-muted">{keterangan}</p>}
+    </div>
+    {
+      lihatSemua && (
+        <a
+          href={lihatSemua}
+          class="shrink-0 py-1 text-sm font-semibold text-brand hover:text-brand-strong"
+        >
+          Lihat semua
+        </a>
+      )
+    }
+  </div>
+
+  {/*
+    Digeser mendatar, bukan ditumpuk. Deret ini satu baris produk, jadi
+    gesernya tidak bertabrakan dengan gulir halaman yang tegak.
+  */}
+  <div
+    class="mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:thin]"
+  >
+    {produk.map((p) => <div class="snap-start"><ProductCard produk={p} tetap /></div>)}
+  </div>
+</section>

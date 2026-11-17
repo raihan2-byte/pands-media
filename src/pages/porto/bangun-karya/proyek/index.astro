@@ -1,0 +1,101 @@
+---
+import BangunLayout from '../../../../layouts/BangunLayout.astro';
+import KartuProyek from '../../../../components/demos/bangun-karya/KartuProyek.astro';
+import { proyek, jenisProyek } from '../../../../data/bangun-karya';
+
+const urut = [...proyek].sort((a, b) => b.tahun - a.tahun);
+---
+
+<BangunLayout
+  title="Proyek"
+  description="Daftar proyek CV Bangun Karya: rumah tinggal, komersial, industri, dan pekerjaan sipil."
+>
+  <section class="bg-accent py-14 text-white">
+    <div class="wrap">
+      <p class="text-xs font-semibold tracking-[0.18em] text-brand-light uppercase">Portofolio</p>
+      <h1 class="mt-2 font-display text-5xl leading-none font-bold text-white uppercase sm:text-7xl">
+        Proyek kami
+      </h1>
+      <p class="mt-4 max-w-xl text-white/70">
+        {proyek.length} proyek terpilih dari lebih dari 240 yang sudah diserahterimakan.
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap py-10">
+    {/* Penyaring bekerja pada kartu yang sudah tercetak di HTML, jadi daftar
+        tetap lengkap kalau JavaScript gagal dimuat. */}
+    <div
+      class="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      role="group"
+      aria-label="Saring menurut jenis proyek"
+    >
+      <button
+        type="button"
+        data-jenis="semua"
+        aria-pressed="true"
+        class="jenis min-h-11 shrink-0 border border-line-strong px-5 text-sm font-semibold tracking-wide whitespace-nowrap uppercase"
+      >
+        Semua
+      </button>
+      {
+        jenisProyek.map((j) => (
+          <button
+            type="button"
+            data-jenis={j.slug}
+            aria-pressed="false"
+            class="jenis min-h-11 shrink-0 border border-line-strong px-5 text-sm font-semibold tracking-wide whitespace-nowrap uppercase"
+          >
+            {j.nama}
+          </button>
+        ))
+      }
+    </div>
+
+    <p id="hasil" aria-live="polite" class="mt-5 text-sm text-ink-muted">
+      Menampilkan {proyek.length} proyek.
+    </p>
+
+    <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        urut.map((p) => (
+          <div class="proyek" data-jenis={p.jenis}>
+            <KartuProyek proyek={p} />
+          </div>
+        ))
+      }
+    </div>
+
+    <p id="kosong" hidden class="mt-6 border border-line bg-surface-alt p-8 text-center text-sm">
+      Belum ada proyek di jenis ini.
+    </p>
+  </section>
+</BangunLayout>
+
+<script>
+  const kartu = Array.from(document.querySelectorAll<HTMLElement>('.proyek'));
+  const tombol = Array.from(document.querySelectorAll<HTMLButtonElement>('.jenis'));
+  const hasil = document.getElementById('hasil');
+  const kosong = document.getElementById('kosong');
+
+  function pilih(nilai: string) {
+    let tampil = 0;
+    for (const k of kartu) {
+      const cocok = nilai === 'semua' || k.dataset.jenis === nilai;
+      k.hidden = !cocok;
+      if (cocok) tampil++;
+    }
+    for (const t of tombol) {
+      const aktif = t.dataset.jenis === nilai;
+      t.setAttribute('aria-pressed', String(aktif));
+      t.classList.toggle('bg-ink', aktif);
+      t.classList.toggle('text-white', aktif);
+      t.classList.toggle('border-ink', aktif);
+    }
+    if (hasil) hasil.textContent = `Menampilkan ${tampil} proyek.`;
+    if (kosong) kosong.hidden = tampil !== 0;
+  }
+
+  for (const t of tombol) t.addEventListener('click', () => pilih(t.dataset.jenis ?? 'semua'));
+  pilih(new URLSearchParams(location.search).get('jenis') ?? 'semua');
+</script>

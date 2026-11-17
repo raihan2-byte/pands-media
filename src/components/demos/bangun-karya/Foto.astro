@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { fotoAlt } from '../../../data/bangun-karya';
+
+interface Props {
+  nama: string;
+  class?: string;
+  widths?: number[];
+  sizes?: string;
+  prioritas?: boolean;
+  alt?: string;
+}
+
+const {
+  nama,
+  class: className,
+  widths = [480, 800, 1200],
+  sizes = '(min-width: 1024px) 50vw, 100vw',
+  prioritas = false,
+  alt,
+} = Astro.props;
+
+const berkas = import.meta.glob<{ default: ImageMetadata }>(
+  '../../../assets/bangun-karya/*.jpg',
+  { eager: true },
+);
+const foto = berkas[`../../../assets/bangun-karya/${nama}.jpg`]?.default;
+const teks = alt ?? fotoAlt[nama] ?? '';
+---
+
+{
+  foto ? (
+    <div class:list={['overflow-hidden bg-surface-alt', className]}>
+      <Image
+        src={foto}
+        alt={teks}
+        widths={widths}
+        sizes={sizes}
+        loading={prioritas ? 'eager' : 'lazy'}
+        decoding={prioritas ? 'sync' : 'async'}
+        fetchpriority={prioritas ? 'high' : 'auto'}
+        class="h-full w-full object-cover"
+      />
+    </div>
+  ) : (
+    <div class:list={['bg-surface-alt', className]} role="img" aria-label={teks} />
+  )
+}

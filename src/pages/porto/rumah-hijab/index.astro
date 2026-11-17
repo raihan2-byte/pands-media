@@ -1,0 +1,176 @@
+---
+import HijabLayout from '../../../layouts/HijabLayout.astro';
+import Foto from '../../../components/demos/rumah-hijab/Foto.astro';
+import ProductCard from '../../../components/demos/rumah-hijab/ProductCard.astro';
+import { produk, kategori, toko, rupiah } from '../../../data/rumah-hijab';
+
+const base = '/porto/rumah-hijab';
+const pilihan = produk.filter((p) => p.unggulan);
+const terbaru = produk.filter((p) => !p.unggulan).slice(0, 4);
+const termurah = Math.min(...produk.map((p) => p.harga));
+---
+
+<HijabLayout
+  title="Toko Hijab & Busana Muslim"
+  description="Rumah Hijab Aisyah menjual hijab, gamis, dan perlengkapan salat. Gratis ongkir untuk belanja di atas Rp300.000."
+>
+  {/* Hero dua kolom: janji di kiri, foto besar di kanan. */}
+  <section class="wrap grid gap-8 py-10 lg:grid-cols-2 lg:items-center lg:gap-12 lg:py-16">
+    <div>
+      <p class="text-xs font-semibold tracking-[0.18em] text-brand uppercase">
+        Koleksi harian
+      </p>
+      <h1 class="mt-4 font-display text-4xl leading-[1.1] sm:text-5xl">
+        Hijab yang tetap rapi<br />sampai sore.
+      </h1>
+      <p class="mt-5 max-w-md text-ink-muted">
+        {toko.tagline}. Dijahit sendiri di {toko.kota}, dicoba dulu sebelum
+        dijual, dan dikirim hari itu juga kalau pesan sebelum jam 15.00.
+      </p>
+
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a
+          href={`${base}/produk`}
+          class="inline-flex min-h-12 items-center rounded-control bg-brand px-7 font-semibold text-white hover:bg-brand-strong"
+        >
+          Belanja sekarang
+        </a>
+        <a
+          href={`${base}/produk?jenis=gamis`}
+          class="inline-flex min-h-12 items-center rounded-control border border-line-strong px-7 font-semibold hover:border-brand hover:text-brand"
+        >
+          Lihat gamis
+        </a>
+      </div>
+
+      <dl class="mt-9 flex flex-wrap gap-x-10 gap-y-4 border-t border-line pt-6 text-sm">
+        <div>
+          <dt class="text-ink-muted">Mulai dari</dt>
+          <dd class="tabular font-display text-xl">{rupiah(termurah)}</dd>
+        </div>
+        <div>
+          <dt class="text-ink-muted">Pembeli puas</dt>
+          <dd class="tabular font-display text-xl">4.8 / 5</dd>
+        </div>
+        <div>
+          <dt class="text-ink-muted">Tukar barang</dt>
+          <dd class="font-display text-xl">3 hari</dd>
+        </div>
+      </dl>
+    </div>
+
+    <div class="relative">
+      <Foto
+        slug="hero-toko"
+        prioritas
+        class="aspect-4/5 rounded-card lg:aspect-square"
+        widths={[480, 720, 1080]}
+        sizes="(min-width: 1024px) 560px, 100vw"
+      />
+      {/* Kartu kecil di atas foto, memberi satu alasan untuk percaya. */}
+      <div
+        class="absolute right-4 bottom-4 max-w-[14rem] rounded-card bg-surface/95 p-4 backdrop-blur"
+      >
+        <p class="font-display text-base">Dikirim dari Bandung</p>
+        <p class="mt-1 text-xs text-ink-muted">
+          Pesan sebelum jam 15.00, paket berangkat hari itu juga.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* Kategori sebagai pintu masuk, pakai foto wakilnya. */}
+  <section class="wrap py-6">
+    <h2 class="sr-only">Kategori</h2>
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {
+        kategori.map((k) => {
+          const wakil = produk.find((p) => p.kategori === k.slug)!;
+          return (
+            <a
+              href={`${base}/produk?jenis=${k.slug}`}
+              class="group relative overflow-hidden rounded-card"
+            >
+              <Foto
+                slug={wakil.slug}
+                class="aspect-square transition-transform duration-500 group-hover:scale-105 motion-reduce:transition-none"
+                widths={[240, 480]}
+                sizes="(min-width: 1024px) 280px, 45vw"
+                alt=""
+              />
+              <span class="absolute inset-0 bg-linear-to-t from-ink/75 via-ink/10 to-transparent" />
+              <span class="absolute inset-x-0 bottom-0 p-4 text-white">
+                <span class="block font-display text-lg">{k.nama}</span>
+                <span class="block text-xs text-white/80">{k.ringkas}</span>
+              </span>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section class="wrap py-10">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <h2 class="font-display text-2xl sm:text-3xl">Paling dicari minggu ini</h2>
+        <p class="mt-1 text-sm text-ink-muted">
+          Dipilih berdasarkan pesanan yang paling sering masuk.
+        </p>
+      </div>
+      <a
+        href={`${base}/produk`}
+        class="hidden shrink-0 py-1 text-sm font-semibold text-brand hover:text-brand-strong sm:block"
+      >
+        Semua produk
+      </a>
+    </div>
+
+    <div class="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
+      {pilihan.map((p) => <ProductCard produk={p} />)}
+    </div>
+  </section>
+
+  {/* Tiga janji toko. Pendek, tanpa ikon berlebihan. */}
+  <section class="border-y border-line bg-surface-alt py-12">
+    <div class="wrap grid gap-6 sm:grid-cols-3">
+      {
+        [
+          {
+            judul: 'Dicoba dulu sebelum dijual',
+            isi: 'Tiap bahan dipakai sendiri seminggu. Kalau panas atau gampang kusut, tidak masuk toko.',
+          },
+          {
+            judul: 'Warna sesuai foto',
+            isi: 'Difoto tanpa filter di cahaya matahari. Kalau warnanya beda, boleh ditukar.',
+          },
+          {
+            judul: 'Tukar 3 hari tanpa drama',
+            isi: 'Salah ukuran atau berubah pikiran, kirim balik. Ongkir tukar pertama kami tanggung.',
+          },
+        ].map((j) => (
+          <div>
+            <h3 class="font-display text-lg">{j.judul}</h3>
+            <p class="mt-2 text-sm text-ink-muted">{j.isi}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="wrap py-12">
+    <h2 class="font-display text-2xl sm:text-3xl">Baru masuk</h2>
+    <div class="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
+      {terbaru.map((p) => <ProductCard produk={p} />)}
+    </div>
+
+    <p class="mt-8 text-center sm:hidden">
+      <a
+        href={`${base}/produk`}
+        class="inline-flex min-h-12 items-center rounded-control border border-line-strong px-7 font-semibold"
+      >
+        Lihat semua produk
+      </a>
+    </p>
+  </section>
+</HijabLayout>

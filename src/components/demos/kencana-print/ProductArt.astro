@@ -1,0 +1,268 @@
+---
+import type { ArtJenis } from '../../../data/kencana-print';
+
+interface Props {
+  jenis: ArtJenis;
+  class?: string;
+}
+
+const { jenis, class: className } = Astro.props;
+
+/*
+  Gambar produk digambar sebagai SVG, bukan foto.
+  Alasannya: demo ini tidak boleh memakai foto milik percetakan lain, dan
+  gambar vektor tetap tajam di layar apa pun tanpa menambah berat halaman.
+  Warna mengikuti token brand, jadi ikut berubah kalau warna toko diganti.
+*/
+---
+
+<div
+  class:list={[
+    'flex items-center justify-center overflow-hidden bg-brand-soft',
+    className,
+  ]}
+>
+  <svg viewBox="0 0 160 120" class="h-full w-full" role="img" aria-hidden="true">
+    {
+      jenis === 'spanduk' && (
+        <g>
+          <rect x="14" y="34" width="132" height="52" rx="2" fill="var(--color-surface)" />
+          <rect x="14" y="34" width="132" height="12" fill="var(--color-brand)" />
+          <rect x="22" y="54" width="70" height="7" rx="1.5" fill="var(--color-brand)" />
+          <rect x="22" y="66" width="52" height="5" rx="1.5" fill="var(--color-ink)" opacity="0.2" />
+          <circle cx="124" cy="66" r="12" fill="var(--color-accent)" />
+          <circle cx="18" cy="40" r="2" fill="var(--color-surface)" />
+          <circle cx="142" cy="40" r="2" fill="var(--color-surface)" />
+          <path d="M8 30h144" stroke="var(--color-ink)" stroke-opacity="0.25" stroke-width="2" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'xbanner' && (
+        <g>
+          <path
+            d="M52 22 L108 106 M108 22 L52 106"
+            stroke="var(--color-ink)"
+            stroke-opacity="0.2"
+            stroke-width="3"
+          />
+          <rect x="54" y="16" width="52" height="88" rx="2" fill="var(--color-surface)" />
+          <rect x="54" y="16" width="52" height="22" fill="var(--color-brand)" />
+          <rect x="62" y="46" width="36" height="5" rx="1.5" fill="var(--color-ink)" opacity="0.25" />
+          <rect x="62" y="56" width="26" height="5" rx="1.5" fill="var(--color-ink)" opacity="0.15" />
+          <rect x="62" y="70" width="36" height="20" rx="2" fill="var(--color-accent)" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'rollbanner' && (
+        <g>
+          <rect x="58" y="12" width="44" height="84" rx="2" fill="var(--color-surface)" />
+          <rect x="58" y="12" width="44" height="30" fill="var(--color-brand)" />
+          <circle cx="80" cy="27" r="8" fill="var(--color-accent)" />
+          <rect x="66" y="50" width="28" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.25" />
+          <rect x="66" y="58" width="20" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.15" />
+          <rect x="66" y="70" width="28" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.15" />
+          <rect x="52" y="96" width="56" height="9" rx="4" fill="var(--color-brand-strong)" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'stiker' && (
+        <g>
+          <path
+            d="M44 30h56a6 6 0 0 1 6 6v38a6 6 0 0 1-6 6H44a6 6 0 0 1-6-6V36a6 6 0 0 1 6-6Z"
+            fill="var(--color-surface)"
+            stroke="var(--color-brand)"
+            stroke-width="3"
+            stroke-dasharray="6 4"
+          />
+          <circle cx="66" cy="55" r="12" fill="var(--color-accent)" />
+          <rect x="84" y="46" width="16" height="5" rx="1.5" fill="var(--color-brand)" />
+          <rect x="84" y="56" width="12" height="5" rx="1.5" fill="var(--color-ink)" opacity="0.2" />
+          <path
+            d="M104 72c10 2 16 8 18 16-10-2-16-8-18-16Z"
+            fill="var(--color-brand-strong)"
+            opacity="0.5"
+          />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'kartunama' && (
+        <g>
+          <rect
+            x="26"
+            y="42"
+            width="78"
+            height="46"
+            rx="3"
+            fill="var(--color-ink)"
+            opacity="0.12"
+          />
+          <rect x="36" y="32" width="78" height="46" rx="3" fill="var(--color-surface)" />
+          <rect x="36" y="32" width="78" height="10" fill="var(--color-brand)" />
+          <circle cx="50" cy="56" r="6" fill="var(--color-accent)" />
+          <rect x="62" y="51" width="38" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.3" />
+          <rect x="62" y="59" width="26" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.15" />
+          <rect x="44" y="68" width="56" height="3" rx="1.5" fill="var(--color-ink)" opacity="0.1" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'dokumen' && (
+        <g>
+          <rect x="40" y="16" width="62" height="80" rx="3" fill="var(--color-ink)" opacity="0.1" />
+          <rect x="50" y="20" width="62" height="80" rx="3" fill="var(--color-surface)" />
+          <rect x="60" y="32" width="30" height="7" rx="2" fill="var(--color-brand)" />
+          <rect x="60" y="46" width="42" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.2" />
+          <rect x="60" y="55" width="42" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.2" />
+          <rect x="60" y="64" width="28" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.2" />
+          <rect x="60" y="76" width="20" height="12" rx="2" fill="var(--color-accent)" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'brosur' && (
+        <g>
+          <path d="M34 26h30v70H34z" fill="var(--color-surface)" />
+          <path d="M64 22h32v78H64z" fill="var(--color-brand-soft)" />
+          <path d="M96 26h30v70H96z" fill="var(--color-surface)" />
+          <path
+            d="M34 26h30v70H34zM64 22h32v78H64zM96 26h30v70H96z"
+            fill="none"
+            stroke="var(--color-brand)"
+            stroke-width="2"
+          />
+          <rect x="70" y="34" width="20" height="6" rx="2" fill="var(--color-brand)" />
+          <rect x="70" y="46" width="20" height="4" rx="1.5" fill="var(--color-ink)" opacity="0.2" />
+          <rect x="70" y="62" width="20" height="16" rx="2" fill="var(--color-accent)" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'kaos' && (
+        <g>
+          <path
+            d="M60 24h40l20 14-10 14-10-6v44a4 4 0 0 1-4 4H64a4 4 0 0 1-4-4V46l-10 6-10-14 20-14Z"
+            fill="var(--color-surface)"
+            stroke="var(--color-brand)"
+            stroke-width="2.5"
+            stroke-linejoin="round"
+          />
+          <path d="M70 24c0 6 4 10 10 10s10-4 10-10" fill="none" stroke="var(--color-brand)" stroke-width="2.5" />
+          <circle cx="80" cy="66" r="14" fill="var(--color-accent)" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'mug' && (
+        <g>
+          <path
+            d="M44 34h56v46a12 12 0 0 1-12 12H56a12 12 0 0 1-12-12V34Z"
+            fill="var(--color-surface)"
+            stroke="var(--color-brand)"
+            stroke-width="2.5"
+          />
+          <path
+            d="M100 46h10a12 12 0 0 1 0 24h-10"
+            fill="none"
+            stroke="var(--color-brand)"
+            stroke-width="2.5"
+          />
+          <rect x="54" y="48" width="36" height="22" rx="3" fill="var(--color-accent)" />
+          <rect x="44" y="34" width="56" height="7" fill="var(--color-brand)" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'totebag' && (
+        <g>
+          <path
+            d="M46 40h68v56a6 6 0 0 1-6 6H52a6 6 0 0 1-6-6V40Z"
+            fill="var(--color-surface)"
+            stroke="var(--color-brand)"
+            stroke-width="2.5"
+          />
+          <path
+            d="M62 40V30a18 18 0 0 1 36 0v10"
+            fill="none"
+            stroke="var(--color-brand)"
+            stroke-width="2.5"
+          />
+          <circle cx="80" cy="70" r="13" fill="var(--color-accent)" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'pin' && (
+        <g>
+          <circle cx="68" cy="62" r="26" fill="var(--color-surface)" stroke="var(--color-brand)" stroke-width="2.5" />
+          <circle cx="68" cy="62" r="15" fill="var(--color-accent)" />
+          <circle cx="104" cy="50" r="16" fill="var(--color-brand)" opacity="0.25" />
+          <path d="M94 76l18-10" stroke="var(--color-brand-strong)" stroke-width="3" stroke-linecap="round" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'kalender' && (
+        <g>
+          <path d="M38 40h84v52H38z" fill="var(--color-surface)" stroke="var(--color-brand)" stroke-width="2.5" />
+          <rect x="38" y="40" width="84" height="14" fill="var(--color-brand)" />
+          <path d="M52 34v12M108 34v12" stroke="var(--color-brand-strong)" stroke-width="4" stroke-linecap="round" />
+          {[0, 1, 2, 3, 4].map((c) =>
+            [0, 1, 2].map((r) => (
+              <rect
+                x={50 + c * 14}
+                y={62 + r * 10}
+                width="8"
+                height="6"
+                rx="1.5"
+                fill={c === 2 && r === 1 ? 'var(--color-accent)' : 'var(--color-ink)'}
+                opacity={c === 2 && r === 1 ? 1 : 0.15}
+              />
+            )),
+          )}
+        </g>
+      )
+    }
+
+    {
+      jenis === 'idcard' && (
+        <g>
+          <path d="M80 12v18" stroke="var(--color-brand)" stroke-width="3" />
+          <rect x="52" y="30" width="56" height="74" rx="5" fill="var(--color-surface)" stroke="var(--color-brand)" stroke-width="2.5" />
+          <rect x="68" y="26" width="24" height="8" rx="4" fill="var(--color-brand-strong)" />
+          <circle cx="80" cy="56" r="11" fill="var(--color-accent)" />
+          <rect x="64" y="74" width="32" height="5" rx="2" fill="var(--color-ink)" opacity="0.25" />
+          <rect x="70" y="84" width="20" height="4" rx="2" fill="var(--color-ink)" opacity="0.15" />
+        </g>
+      )
+    }
+
+    {
+      jenis === 'undangan' && (
+        <g>
+          <rect x="34" y="34" width="92" height="56" rx="3" fill="var(--color-surface)" stroke="var(--color-brand)" stroke-width="2.5" />
+          <path d="M34 36l46 32 46-32" fill="none" stroke="var(--color-brand)" stroke-width="2.5" />
+          <circle cx="80" cy="84" r="14" fill="var(--color-accent)" />
+          <path
+            d="M80 90c-5-4-8-6-8-9a3.5 3.5 0 0 1 6-2.4 3.5 3.5 0 0 1 6 2.4c0 3-3 5-4 9Z"
+            fill="var(--color-surface)"
+          />
+        </g>
+      )
+    }
+  </svg>
+</div>

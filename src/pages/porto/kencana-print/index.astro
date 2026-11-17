@@ -1,0 +1,131 @@
+---
+import KencanaLayout from '../../../layouts/KencanaLayout.astro';
+import HeroBanner from '../../../components/demos/kencana-print/HeroBanner.astro';
+import ProductRail from '../../../components/demos/kencana-print/ProductRail.astro';
+import ProductCard from '../../../components/demos/kencana-print/ProductCard.astro';
+import CaraOrder from '../../../components/demos/kencana-print/CaraOrder.astro';
+import ProductPhoto from '../../../components/demos/kencana-print/ProductPhoto.astro';
+import { produk, kategori, toko } from '../../../data/kencana-print';
+
+const base = '/porto/kencana-print';
+const pilihan = produk.filter((p) => p.unggulan);
+const merchandise = produk.filter((p) => p.kategori === 'merchandise');
+const bisnis = produk.filter((p) => p.kategori === 'bisnis' || p.kategori === 'kartu');
+---
+
+<KencanaLayout
+  title="Cetak Cepat Yogyakarta"
+  description="Kencana Print: spanduk, stiker, kartu nama, dan merchandise. Harga dihitung sendiri sebelum pesan."
+>
+  <HeroBanner />
+
+  {/* Kategori sebagai pintu masuk besar, bukan hanya teks di nav. */}
+  <section class="wrap pb-2">
+    <h2 class="sr-only">Kategori produk</h2>
+    <div class="grid grid-cols-3 gap-2.5 sm:gap-3 lg:grid-cols-6">
+      {
+        kategori.map((k) => (
+          <a
+            href={`${base}/produk?kategori=${k.slug}`}
+            class="flex flex-col items-center gap-2 rounded-card border border-line bg-surface p-3 text-center transition-colors duration-200 hover:border-brand motion-reduce:transition-none"
+          >
+            <ProductPhoto slug={k.foto} class="size-14 rounded-full" widths={[112, 224]} sizes="56px" />
+            <span class="text-xs leading-tight font-semibold">{k.nama}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <ProductRail
+    judul="Paling sering dipesan"
+    keterangan="Geser untuk melihat semuanya."
+    produk={pilihan}
+    lihatSemua={`${base}/produk`}
+  />
+
+  {/* Pita janji layanan. Tiga hal yang paling sering ditanya pelanggan. */}
+  <section class="wrap py-4">
+    <ul class="grid gap-3 sm:grid-cols-3">
+      {
+        [
+          { judul: 'Jadi hari ini juga', isi: 'Pesan sebelum jam 13.00 untuk spanduk dan print.' },
+          { judul: 'Salah cetak, kami ganti', isi: 'Kalau hasilnya tidak sesuai file kamu.' },
+          { judul: 'Tidak punya desain?', isi: 'Kami buatkan mulai Rp50.000.' },
+        ].map((j) => (
+          <li class="rounded-card border border-line bg-surface p-4">
+            <h3 class="text-base">{j.judul}</h3>
+            <p class="mt-1 text-sm text-ink-muted">{j.isi}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <ProductRail
+    judul="Merchandise"
+    keterangan="Boleh pesan satuan. Cocok untuk hadiah dan seminar kit."
+    produk={merchandise}
+    lihatSemua={`${base}/produk?kategori=merchandise`}
+  />
+
+  <CaraOrder />
+
+  <section class="wrap py-10">
+    <h2 class="text-xl sm:text-2xl">Perlengkapan usaha</h2>
+    <p class="mt-1 text-sm text-ink-muted">
+      Kartu nama, undangan, kalender, dan kartu identitas staf.
+    </p>
+    <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      {bisnis.map((p) => <ProductCard produk={p} />)}
+    </div>
+  </section>
+
+  {/* Blok alamat dan peta. Pelanggan lokal selalu mencari ini. */}
+  <section class="wrap pb-12">
+    <div class="grid gap-5 rounded-card border border-line bg-surface-alt p-5 sm:p-7 lg:grid-cols-2">
+      <div>
+        <h2 class="text-xl">Mampir ke toko</h2>
+        <p class="mt-2 text-sm text-ink-muted">{toko.alamat}</p>
+        <dl class="mt-4 flex flex-col gap-1.5 text-sm">
+          {
+            toko.jam.map((j) => (
+              <div class="flex justify-between gap-4 border-b border-line pb-1.5 last:border-0">
+                <dt class="text-ink-muted">{j.hari}</dt>
+                <dd class="tabular font-medium">{j.buka}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <a
+          href={`https://wa.me/${toko.whatsapp}`}
+          target="_blank"
+          rel="noopener"
+          class="mt-5 inline-flex min-h-11 items-center rounded-control bg-brand px-5 text-sm font-bold text-white hover:bg-brand-strong"
+        >
+          Tanya lewat WhatsApp
+        </a>
+      </div>
+
+      {/* Peta digambar, bukan disematkan. Demo tidak memanggil layanan luar. */}
+      <div
+        class="relative min-h-44 overflow-hidden rounded-card border border-line bg-surface"
+        aria-hidden="true"
+      >
+        <svg viewBox="0 0 320 200" class="h-full w-full">
+          <rect width="320" height="200" fill="var(--color-brand-soft)"></rect>
+          <path d="M0 130h320M120 0v200M0 60h320M240 0v200" stroke="var(--color-surface)" stroke-width="10"></path>
+          <path d="M0 60h320" stroke="var(--color-line)" stroke-width="1"></path>
+          <rect x="130" y="70" width="48" height="36" rx="3" fill="var(--color-brand)" opacity="0.15"></rect>
+          <rect x="190" y="140" width="36" height="30" rx="3" fill="var(--color-brand)" opacity="0.1"></rect>
+          <rect x="30" y="80" width="60" height="34" rx="3" fill="var(--color-brand)" opacity="0.1"></rect>
+          <circle cx="152" cy="88" r="9" fill="var(--color-accent)"></circle>
+          <circle cx="152" cy="88" r="3.5" fill="var(--color-surface)"></circle>
+        </svg>
+        <p class="absolute bottom-3 left-3 rounded-control bg-surface px-3 py-1.5 text-xs font-semibold shadow-card">
+          Kencana Print &middot; {toko.kota}
+        </p>
+      </div>
+    </div>
+  </section>
+</KencanaLayout>

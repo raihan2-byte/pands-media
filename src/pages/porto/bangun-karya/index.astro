@@ -1,0 +1,236 @@
+---
+import BangunLayout from '../../../layouts/BangunLayout.astro';
+import Foto from '../../../components/demos/bangun-karya/Foto.astro';
+import KartuProyek from '../../../components/demos/bangun-karya/KartuProyek.astro';
+import {
+  perusahaan,
+  angka,
+  layanan,
+  proyek,
+  tahap,
+  sertifikat,
+  WA_PESAN,
+} from '../../../data/bangun-karya';
+
+const base = '/porto/bangun-karya';
+const unggulan = proyek.filter((p) => p.unggulan);
+const wa = `https://wa.me/${perusahaan.whatsapp}?text=${encodeURIComponent(WA_PESAN)}`;
+---
+
+<BangunLayout
+  title="Kontraktor Bangunan & Sipil Semarang"
+  description="CV Bangun Karya: bangun baru, renovasi, interior, dan pekerjaan sipil di Jawa Tengah. 240+ proyek selesai, 96% tepat waktu."
+>
+  {/* Hero penuh: foto lebar dengan satu janji dan satu ajakan. */}
+  <section class="relative isolate overflow-hidden bg-accent text-white">
+    <Foto
+      nama="hero"
+      prioritas
+      class="absolute inset-0 -z-20 h-full w-full"
+      widths={[800, 1400, 2000]}
+      sizes="100vw"
+    />
+    <div class="absolute inset-0 -z-10 bg-linear-to-r from-accent/95 via-accent/70 to-accent/20" aria-hidden="true"></div>
+
+    <div class="wrap py-20 sm:py-28 lg:py-36">
+      <p class="text-xs font-semibold tracking-[0.2em] text-brand-light uppercase">
+        Kontraktor sejak {perusahaan.berdiri} · {perusahaan.kota}
+      </p>
+      <h1 class="mt-4 max-w-3xl font-display text-5xl leading-[0.95] font-bold text-white uppercase sm:text-6xl lg:text-8xl">
+        Dibangun rapi.<br />Selesai tepat waktu.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-white/80">
+        Rumah, ruko, gudang, dan jalan kawasan. Rincian biaya per item sebelum
+        tanda tangan, laporan foto tiap minggu selama dikerjakan.
+      </p>
+
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a
+          href={wa}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex min-h-13 items-center bg-brand px-8 text-sm font-semibold tracking-wide text-white uppercase hover:bg-brand-strong"
+        >
+          Minta survei gratis
+        </a>
+        <a
+          href={`${base}/proyek`}
+          class="inline-flex min-h-13 items-center border border-white/40 px-8 text-sm font-semibold tracking-wide uppercase hover:bg-white/10"
+        >
+          Lihat proyek kami
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* Pita angka. Bukti singkat sebelum pengunjung menggulir. */}
+  <section class="border-b border-line bg-surface">
+    <dl class="wrap grid grid-cols-2 lg:grid-cols-4">
+      {
+        angka.map((a, i) => (
+          <div
+            class:list={[
+              'py-7 pr-4',
+              i > 0 && 'lg:border-l lg:border-line lg:pl-8',
+              i % 2 === 1 && 'border-l border-line pl-5 lg:pl-8',
+            ]}
+          >
+            <dd class="tabular font-display text-5xl leading-none font-bold text-brand">
+              {a.nilai}
+            </dd>
+            <dt class="mt-1 text-sm font-semibold tracking-wide uppercase">{a.satuan}</dt>
+            <dd class="mt-0.5 text-xs text-ink-muted">{a.ket}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="wrap py-16 sm:py-20">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <p class="text-xs font-semibold tracking-[0.18em] text-brand uppercase">Layanan</p>
+        <h2 class="mt-2 font-display text-4xl leading-none font-bold uppercase sm:text-5xl">
+          Apa yang kami kerjakan
+        </h2>
+      </div>
+    </div>
+
+    <div class="mt-9 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+      {
+        layanan.map((l, i) => (
+          <div class="bg-surface p-6">
+            <p class="tabular font-display text-sm font-semibold text-brand">
+              {String(i + 1).padStart(2, '0')}
+            </p>
+            <h3 class="mt-3 font-display text-2xl leading-tight font-bold uppercase">{l.nama}</h3>
+            <p class="mt-2 text-sm text-ink-muted">{l.ringkas}</p>
+            <ul class="mt-4 flex flex-col gap-1.5 border-t border-line pt-4 text-sm">
+              {l.isi.map((x) => (
+                <li class="flex gap-2">
+                  <span class="mt-2 size-1.5 shrink-0 bg-brand" aria-hidden="true" />
+                  {x}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="bg-surface-alt py-16 sm:py-20">
+    <div class="wrap">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <p class="text-xs font-semibold tracking-[0.18em] text-brand uppercase">Proyek terpilih</p>
+          <h2 class="mt-2 font-display text-4xl leading-none font-bold uppercase sm:text-5xl">
+            Yang sudah berdiri
+          </h2>
+        </div>
+        <a
+          href={`${base}/proyek`}
+          class="hidden shrink-0 py-1 text-sm font-semibold tracking-wide text-brand uppercase hover:text-brand-strong sm:block"
+        >
+          Semua proyek
+        </a>
+      </div>
+
+      <div class="mt-9 grid gap-5 lg:grid-cols-3">
+        <div class="lg:col-span-2">
+          <KartuProyek proyek={unggulan[0]} besar />
+        </div>
+        <div class="grid gap-5">
+          <KartuProyek proyek={unggulan[1]} />
+        </div>
+        <div class="lg:col-span-3 lg:grid lg:grid-cols-3 lg:gap-5">
+          <div class="lg:col-span-1">
+            <KartuProyek proyek={unggulan[2]} />
+          </div>
+          <div class="mt-5 flex flex-col justify-center bg-accent p-8 text-white lg:col-span-2 lg:mt-0">
+            <p class="text-xs font-semibold tracking-[0.18em] text-brand-light uppercase">
+              Tentang kami
+            </p>
+            <p class="mt-3 font-display text-3xl leading-tight font-bold uppercase sm:text-4xl">
+              Tim tetap {angka[3].nilai} orang, bukan borongan.
+            </p>
+            <p class="mt-3 max-w-lg text-white/70">
+              Pelaksana dan pengawas kami bekerja untuk satu perusahaan, jadi
+              mutu pekerjaan tidak bergantung pada siapa yang kebetulan
+              tersedia bulan itu.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap py-16 sm:py-20">
+    <p class="text-xs font-semibold tracking-[0.18em] text-brand uppercase">Cara kerja</p>
+    <h2 class="mt-2 max-w-2xl font-display text-4xl leading-none font-bold uppercase sm:text-5xl">
+      Empat tahap, tidak ada kejutan di tengah jalan
+    </h2>
+
+    <ol class="mt-10 grid gap-8 md:grid-cols-4">
+      {
+        tahap.map((t) => (
+          <li class="border-t-2 border-ink pt-5">
+            <span class="tabular font-display text-5xl leading-none font-bold text-brand">
+              {t.nomor}
+            </span>
+            <h3 class="mt-3 font-display text-xl font-bold uppercase">{t.judul}</h3>
+            <p class="mt-2 text-sm text-ink-muted">{t.isi}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="border-y border-line bg-surface-alt py-12">
+    <div class="wrap grid gap-6 md:grid-cols-3">
+      {
+        sertifikat.map((s) => (
+          <div class="flex items-start gap-4">
+            <span class="grid size-14 shrink-0 place-items-center border-2 border-ink font-display text-lg font-bold">
+              {s.kode}
+            </span>
+            <span>
+              <span class="block font-semibold">{s.nama}</span>
+              <span class="block text-sm text-ink-muted">{s.ket}</span>
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="relative isolate overflow-hidden bg-brand text-white">
+    <div class="wrap grid gap-8 py-14 sm:py-16 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+      <div>
+        <h2 class="font-display text-4xl leading-none font-bold text-white uppercase sm:text-6xl">
+          Punya lahan atau bangunan yang mau dikerjakan?
+        </h2>
+        <p class="mt-4 max-w-xl text-white/85">
+          Ceritakan lokasi dan kebutuhanmu. Tim survei kami datang tanpa biaya,
+          lalu kirim RAB awal dalam tujuh hari kerja.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 lg:justify-end">
+        <a
+          href={`${base}/kontak`}
+          class="inline-flex min-h-13 items-center bg-white px-8 text-sm font-semibold tracking-wide text-brand-strong uppercase hover:bg-surface-alt"
+        >
+          Isi formulir
+        </a>
+        <a
+          href={wa}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex min-h-13 items-center border border-white/60 px-8 text-sm font-semibold tracking-wide uppercase hover:bg-white/10"
+        >
+          Chat WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+</BangunLayout>

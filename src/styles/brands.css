@@ -1,0 +1,143 @@
+/*
+  Satu blok per brand. `DemoLayout.astro` menaruh `data-brand="<token>"`
+  di elemen `<html>`, lalu blok di bawah menimpa token global.
+
+  Menambah brand baru = tambah satu blok di sini. Komponen tidak berubah.
+  Nilai `--brand-*` dibaca oleh @theme di global.css.
+*/
+
+/* Induk: Pands Media. Nilai aksennya sama dengan default di global.css,
+   ditulis ulang di sini supaya tiap brand punya satu blok yang jelas. */
+[data-brand='pands'] {
+  --color-brand: #5e17eb;
+  --color-brand-light: #9e51ff;
+  --color-brand-soft: #f1eafe;
+  --color-brand-strong: #4a11bd;
+  --color-accent: #46f4f4;
+  --color-accent-soft: #e8fdfd;
+  --color-accent-strong: #0a4f4f;
+  --brand-radius-card: 0.75rem;
+  --brand-radius-control: 0.5rem;
+}
+
+/* Kencana Print — percetakan digital.
+   Teal tinta sebagai warna utama, amber untuk harga dan promo.
+   Sengaja dijauhkan dari merah, warna yang dipakai hampir semua
+   percetakan online di Indonesia. */
+[data-brand='kencana-print'] {
+  --color-brand: oklch(0.52 0.11 205);
+  --color-brand-soft: oklch(0.96 0.025 205);
+  --color-brand-strong: oklch(0.38 0.09 205);
+  --color-accent: oklch(0.72 0.17 65);
+  --color-accent-soft: oklch(0.96 0.045 75);
+  --color-accent-strong: oklch(0.52 0.14 55);
+  --color-surface-alt: oklch(0.975 0.008 205);
+  --color-line: oklch(0.9 0.012 205);
+  --brand-radius-card: 0.625rem;
+  --brand-radius-control: 0.5rem;
+}
+
+/* Warung Maju — kasir/POS.
+   Hijau tua, kontras tinggi, dipakai sambil berdiri di meja kasir dan
+   sering di bawah lampu terang. Tombolnya besar, warnanya sedikit. */
+[data-brand='warung-maju'] {
+  --color-brand: oklch(0.52 0.13 155);
+  --color-brand-soft: oklch(0.95 0.04 155);
+  --color-brand-strong: oklch(0.4 0.12 155);
+  --color-accent: oklch(0.78 0.15 80);
+  --color-accent-soft: oklch(0.96 0.05 85);
+  --color-accent-strong: oklch(0.45 0.11 70);
+  --color-ink: oklch(0.18 0.01 160);
+  --color-ink-muted: oklch(0.47 0.015 160);
+  --color-surface-alt: oklch(0.97 0.008 155);
+  --color-line: oklch(0.89 0.012 155);
+  --brand-radius-card: 0.75rem;
+  --brand-radius-control: 0.625rem;
+}
+
+/* Gudang Sentosa — inventory.
+   Gaya datar ala papan kendali: slate industri, tanpa bayangan, sudut
+   hampir siku. Aksen hijau limau dipakai sangat hemat, hanya untuk
+   penanda aktif dan barang masuk.
+
+   Fontnya pun beda sendiri: Fira Sans untuk teks dan Fira Code untuk
+   angka serta judul, supaya kolom angka berbaris lurus dan layarnya
+   terasa seperti alat kerja, bukan situs jualan. */
+[data-brand='gudang-sentosa'] {
+  --color-brand: #334155;
+  --color-brand-light: #64748b;
+  --color-brand-soft: #f1f5f9;
+  --color-brand-strong: #1e293b;
+  --color-accent: #65a30d;
+  --color-accent-soft: #f2fbe6;
+  --color-accent-strong: #3f6212;
+  --color-ink: #0f172a;
+  --color-ink-muted: #475569;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8fafc;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+
+  --brand-font-display: 'Fira Code Variable', ui-monospace, monospace;
+  --brand-font-body: 'Fira Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Datar: sudut kecil, bayangan dimatikan, pemisah pakai garis. */
+  --brand-radius-card: 0.25rem;
+  --brand-radius-control: 0.1875rem;
+  --shadow-card: none;
+  --shadow-card-hover: none;
+}
+
+/* Rumah Hijab Aisyah — toko online busana muslim.
+   Mawar tua dengan aksen emas, latar merah jambu pucat. Gaya butik:
+   lapang, foto besar, sudut membulat, judul Playfair Display.
+   Warnanya sengaja hangat supaya berlawanan dengan slate Gudang Sentosa
+   dan ungu Pands Media. */
+[data-brand='rumah-hijab'] {
+  --color-brand: #be185d;
+  --color-brand-light: #ec4899;
+  --color-brand-soft: #fdf2f8;
+  --color-brand-strong: #86164a;
+  --color-accent: #b45309;
+  --color-accent-soft: #fef6e7;
+  --color-accent-strong: #7c3d06;
+  --color-ink: #1f1116;
+  --color-ink-muted: #6b5560;
+  --color-surface: #ffffff;
+  --color-surface-alt: #fdf7f9;
+  --color-line: #f1e2e9;
+  --color-line-strong: #ddc3cf;
+
+  --brand-font-display: 'Playfair Display', ui-serif, Georgia, serif;
+  --brand-font-body: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --brand-radius-card: 1rem;
+  --brand-radius-control: 999px;
+}
+
+/* CV Bangun Karya — kontraktor.
+   Abu beton dengan oranye keselamatan, huruf kondensed tebal seperti papan
+   proyek. Sudut siku, garis tegas, foto lebar. Hasil riset skill:
+   "industrial grey + safety orange". Oranye dipakai untuk satu hal saja:
+   ajakan bertindak dan angka penting. */
+[data-brand='bangun-karya'] {
+  --color-brand: #c2410c;
+  --color-brand-light: #ea580c;
+  --color-brand-soft: #fff4ec;
+  --color-brand-strong: #9a3412;
+  --color-accent: #1f2937;
+  --color-accent-soft: #f3f4f6;
+  --color-accent-strong: #111827;
+  --color-ink: #111827;
+  --color-ink-muted: #4b5563;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f4f4f2;
+  --color-line: #e2e2de;
+  --color-line-strong: #c4c4be;
+
+  --brand-font-display: 'Barlow Condensed', ui-sans-serif, system-ui, sans-serif;
+  --brand-font-body: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+
+  --brand-radius-card: 0.125rem;
+  --brand-radius-control: 0.125rem;
+}

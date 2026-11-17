@@ -1,0 +1,163 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import DemoLayout from './DemoLayout.astro';
+import Keranjang from '../components/demos/rumah-hijab/Keranjang.tsx';
+import { toko, kategori, produk } from '../data/rumah-hijab';
+
+/* Playfair Display hanya dimuat di toko ini. Judul berserif memberi kesan
+   butik, berbeda dari demo lain yang semuanya memakai huruf tanpa kait. */
+import '@fontsource/playfair-display/500.css';
+import '@fontsource/playfair-display/600.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const base = '/porto/rumah-hijab';
+
+/* Gambar kecil untuk laci keranjang disiapkan di sini, lalu yang dikirim ke
+   pulau React hanya alamatnya. */
+const berkas = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/rumah-hijab/*.jpg',
+  { eager: true },
+);
+const fotoKeranjang: Record<string, string> = {};
+for (const p of produk) {
+  const sumber = berkas[`../assets/rumah-hijab/${p.slug}.jpg`]?.default;
+  if (!sumber) continue;
+  const hasil = await getImage({ src: sumber, width: 128, height: 160, format: 'webp', quality: 70 });
+  fotoKeranjang[p.slug] = hasil.src;
+}
+
+const path = Astro.url.pathname;
+const aktif = (href: string) =>
+  href === base ? path === base || path === `${base}/` : path.startsWith(href);
+---
+
+<DemoLayout
+  brand={toko.nama}
+  brandToken="rumah-hijab"
+  domainPalsu={toko.domain}
+  title={title}
+  description={description}
+>
+  <div class="bg-brand text-center text-xs text-white">
+    <p class="px-4 py-2">{toko.ongkir}</p>
+  </div>
+
+  <header class="sticky top-11 z-30 border-b border-line bg-surface/95 backdrop-blur">
+    <div class="wrap flex h-16 items-center justify-between gap-4">
+      <a href={base} class="font-display text-lg leading-tight font-semibold sm:text-xl">
+        Rumah Hijab <span class="text-brand">Aisyah</span>
+      </a>
+
+      <nav aria-label="Navigasi toko" class="hidden items-center gap-1 md:flex">
+        <a
+          href={`${base}/produk`}
+          aria-current={aktif(`${base}/produk`) ? 'page' : undefined}
+          class:list={[
+            'rounded-control px-3 py-2 text-sm font-medium',
+            aktif(`${base}/produk`) ? 'text-brand' : 'text-ink-muted hover:text-ink',
+          ]}
+        >
+          Semua Produk
+        </a>
+        {
+          kategori.map((k) => (
+            <a
+              href={`${base}/produk?jenis=${k.slug}`}
+              class="rounded-control px-3 py-2 text-sm font-medium text-ink-muted hover:text-ink"
+            >
+              {k.nama}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a
+          href={`${base}/produk`}
+          class="inline-flex min-h-11 items-center rounded-control px-3 text-sm font-medium text-ink-muted hover:text-ink md:hidden"
+        >
+          Produk
+        </a>
+        <Keranjang client:load foto={fotoKeranjang} />
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <footer class="mt-16 border-t border-line bg-surface-alt">
+    <div class="wrap grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
+      <div>
+        <p class="font-display text-lg">
+          Rumah Hijab <span class="text-brand">Aisyah</span>
+        </p>
+        <p class="mt-2 text-sm text-ink-muted">
+          {toko.tagline}. Dikirim dari {toko.kota} setiap hari kerja sebelum jam
+          15.00.
+        </p>
+        <p class="mt-3 text-sm text-ink-muted">{toko.instagram}</p>
+      </div>
+
+      <div>
+        <h2 class="text-sm font-semibold">Kategori</h2>
+        <ul class="mt-3 flex flex-col gap-1 text-sm">
+          {
+            kategori.map((k) => (
+              <li>
+                <a
+                  href={`${base}/produk?jenis=${k.slug}`}
+                  class="inline-block py-1 text-ink-muted hover:text-brand"
+                >
+                  {k.nama}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-sm font-semibold">Bantuan</h2>
+        <ul class="mt-3 flex flex-col gap-1 text-sm text-ink-muted">
+          <li class="py-1">Panduan ukuran</li>
+          <li class="py-1">Cara pesan &amp; bayar</li>
+          <li class="py-1">Tukar barang 3 hari</li>
+          <li class="py-1">Lacak pengiriman</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-sm font-semibold">Belanja borongan?</h2>
+        <p class="mt-3 text-sm text-ink-muted">
+          Ada harga khusus untuk pembelian di atas 12 pcs. Hubungi kami lewat
+          WhatsApp.
+        </p>
+        <a
+          href={`https://wa.me/${toko.whatsapp}`}
+          target="_blank"
+          rel="noopener"
+          class="mt-3 inline-flex min-h-11 items-center rounded-control bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-strong"
+        >
+          Chat penjual
+        </a>
+      </div>
+    </div>
+
+    <div class="wrap border-t border-line py-5 text-xs text-ink-muted">
+      <p>
+        Toko ini mockup buatan
+        <a href="/porto" class="font-semibold text-brand">Pands Media</a>. Nama,
+        harga, dan foto di dalamnya fiktif; tidak ada pesanan yang benar-benar
+        diproses.
+      </p>
+    </div>
+  </footer>
+</DemoLayout>

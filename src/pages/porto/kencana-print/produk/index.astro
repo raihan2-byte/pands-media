@@ -1,0 +1,134 @@
+---
+import KencanaLayout from '../../../../layouts/KencanaLayout.astro';
+import ProductCard from '../../../../components/demos/kencana-print/ProductCard.astro';
+import { produk, kategori } from '../../../../data/kencana-print';
+---
+
+<KencanaLayout
+  title="Semua Produk"
+  description="Daftar lengkap produk cetak Kencana Print beserta harganya."
+>
+  <div class="wrap py-8">
+    <h1 class="text-2xl sm:text-3xl">Semua produk</h1>
+    <p class="mt-2 text-sm text-ink-muted">
+      {produk.length} produk. Saring dengan kotak cari atau pilih kategori.
+    </p>
+
+    <div class="mt-6 flex flex-col gap-4">
+      <div class="relative max-w-md">
+        <label for="cari" class="sr-only">Cari produk</label>
+        <input
+          id="cari"
+          type="search"
+          placeholder="Cari spanduk, stiker, mug…"
+          autocomplete="off"
+          class="h-11 w-full rounded-control border border-line bg-surface px-4 text-sm outline-none focus:border-brand"
+        />
+      </div>
+
+      <div
+        class="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        role="group"
+        aria-label="Saring menurut kategori"
+      >
+        <button
+          type="button"
+          data-kategori="semua"
+          class="saring shrink-0 rounded-full border border-line px-4 py-2 text-sm font-semibold whitespace-nowrap"
+          aria-pressed="true"
+        >
+          Semua
+        </button>
+        {
+          kategori.map((k) => (
+            <button
+              type="button"
+              data-kategori={k.slug}
+              class="saring shrink-0 rounded-full border border-line px-4 py-2 text-sm font-semibold whitespace-nowrap"
+              aria-pressed="false"
+            >
+              {k.nama}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <p id="hasil" aria-live="polite" class="mt-5 text-sm text-ink-muted">
+      Menampilkan {produk.length} produk.
+    </p>
+
+    <div id="grid" class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      {
+        produk.map((p) => (
+          <div
+            class="produk"
+            data-kategori={p.kategori}
+            data-nama={`${p.nama} ${p.ringkas}`.toLowerCase()}
+          >
+            <ProductCard produk={p} />
+          </div>
+        ))
+      }
+    </div>
+
+    <p id="kosong" hidden class="mt-6 rounded-card border border-line bg-surface-alt p-6 text-sm">
+      Tidak ada produk yang cocok. Coba kata lain, atau
+      <a href="/porto/kencana-print/produk" class="font-semibold text-brand">tampilkan semua</a>.
+    </p>
+  </div>
+</KencanaLayout>
+
+<script>
+  // Penyaringan dilakukan di browser pada kartu yang sudah tercetak di HTML.
+  // Dengan begitu daftar produk tetap ada walau JavaScript gagal dimuat,
+  // dan markup kartunya cuma ditulis sekali.
+  const cari = document.getElementById('cari') as HTMLInputElement | null;
+  const tombol = Array.from(document.querySelectorAll<HTMLButtonElement>('.saring'));
+  const kartu = Array.from(document.querySelectorAll<HTMLElement>('.produk'));
+  const hasil = document.getElementById('hasil');
+  const kosong = document.getElementById('kosong');
+
+  let kategoriAktif = 'semua';
+
+  function terapkan() {
+    const kata = (cari?.value ?? '').trim().toLowerCase();
+    let tampil = 0;
+
+    for (const k of kartu) {
+      const cocokKategori =
+        kategoriAktif === 'semua' || k.dataset.kategori === kategoriAktif;
+      const cocokKata = kata === '' || (k.dataset.nama ?? '').includes(kata);
+      const tampilkan = cocokKategori && cocokKata;
+      k.hidden = !tampilkan;
+      if (tampilkan) tampil++;
+    }
+
+    if (hasil) hasil.textContent = `Menampilkan ${tampil} produk.`;
+    if (kosong) kosong.hidden = tampil !== 0;
+  }
+
+  function setAktif(slug: string) {
+    kategoriAktif = slug;
+    for (const t of tombol) {
+      const aktif = t.dataset.kategori === slug;
+      t.setAttribute('aria-pressed', String(aktif));
+      t.classList.toggle('bg-brand', aktif);
+      t.classList.toggle('text-white', aktif);
+      t.classList.toggle('border-brand', aktif);
+    }
+    terapkan();
+  }
+
+  for (const t of tombol) {
+    t.addEventListener('click', () => setAktif(t.dataset.kategori ?? 'semua'));
+  }
+  cari?.addEventListener('input', terapkan);
+
+  // Nilai awal diambil dari alamat halaman, supaya tautan kategori dan
+  // kotak cari di header langsung menyaring saat halaman terbuka.
+  const params = new URLSearchParams(location.search);
+  const q = params.get('q');
+  if (q && cari) cari.value = q;
+  setAktif(params.get('kategori') ?? 'semua');
+</script>

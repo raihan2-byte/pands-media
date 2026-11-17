@@ -1,0 +1,111 @@
+---
+import Button from '../ui/Button.astro';
+import { waLink } from '../../site';
+
+/*
+  Harga ditetapkan pemilik Pands Media. Company Profile dan Katalog & Toko
+  memakai kisaran; Aplikasi Usaha tidak diberi angka karena tiap alur kerja
+  berbeda, jadi harganya dinegosiasikan setelah kebutuhan dipahami.
+*/
+const paket = [
+  {
+    nama: 'Company Profile',
+    harga: 'Rp400 rb – 1,5 jt',
+    untuk: 'Usaha jasa yang butuh terlihat kredibel saat dicari di Google.',
+    isi: ['Sampai 5 halaman', 'Tampil rapi di HP', 'Form kontak ke WhatsApp', 'Dasar SEO'],
+  },
+  {
+    nama: 'Katalog & Toko',
+    harga: 'Rp2 – 3 jt',
+    untuk: 'Penjual yang mau pelanggan bisa lihat produk dan harga sendiri.',
+    isi: [
+      'Katalog produk tanpa batas',
+      'Keranjang atau form pesanan',
+      'Checkout ke WhatsApp',
+      'Kamu bisa ubah produk sendiri',
+    ],
+    unggulan: true,
+  },
+  {
+    nama: 'Aplikasi Usaha',
+    harga: 'Negosiasi',
+    untuk: 'Kasir, stok, atau pencatatan yang masih ditulis di buku. Harga disepakati setelah kami paham alur kerjamu.',
+    isi: [
+      'Rancangan sesuai alur kerjamu',
+      'Banyak pengguna dan hak akses',
+      'Laporan yang bisa diunduh',
+      'Pelatihan untuk staf',
+    ],
+  },
+];
+---
+
+<section id="harga" class="py-14 sm:py-20">
+  <div class="wrap">
+    <h2 class="text-2xl sm:text-3xl">Kisaran biaya</h2>
+    <p class="mt-2 max-w-xl text-ink-muted">
+      Harga pasti tergantung isi dan rumitnya. Angka di bawah untuk gambaran
+      awal supaya kamu tidak perlu menebak.
+    </p>
+
+    <div class="mt-8 grid gap-4 md:grid-cols-3 md:gap-5">
+      {
+        paket.map((p) => (
+          <div
+            class:list={[
+              'flex flex-col rounded-card border bg-surface p-5 sm:p-6',
+              p.unggulan ? 'border-brand ring-1 ring-brand' : 'border-line',
+            ]}
+          >
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-lg">{p.nama}</h3>
+              {p.unggulan && (
+                <span class="rounded-full bg-brand-soft px-2 py-0.5 text-[11px] font-semibold text-brand-strong">
+                  Paling sering
+                </span>
+              )}
+            </div>
+
+            <p class="tabular mt-3 font-display text-2xl font-extrabold">{p.harga}</p>
+            <p class="mt-2 text-sm text-ink-muted">{p.untuk}</p>
+
+            <ul class="mt-5 flex flex-1 flex-col gap-2 text-sm">
+              {p.isi.map((item) => (
+                <li class="flex items-start gap-2">
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="mt-0.5 size-4 shrink-0 text-brand"
+                  >
+                    <path d="m3 8.5 3.5 3.5L13 5" />
+                  </svg>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <Button
+              href={waLink(`Halo Pands Media, saya mau tanya paket ${p.nama}.`)}
+              variant={p.unggulan ? 'primary' : 'outline'}
+              target="_blank"
+              rel="noopener"
+              class="mt-6 w-full"
+            >
+              Tanya paket ini
+            </Button>
+          </div>
+        ))
+      }
+    </div>
+
+    <p class="mt-5 text-sm text-ink-muted">
+      Belum termasuk domain dan hosting, sekitar Rp300&ndash;600 rb per tahun.
+      Bisa kami uruskan atau kamu beli sendiri.
+    </p>
+  </div>
+</section>

@@ -1,0 +1,196 @@
+---
+import HijabLayout from '../../../../layouts/HijabLayout.astro';
+import ProductCard from '../../../../components/demos/rumah-hijab/ProductCard.astro';
+import { produk, kategori } from '../../../../data/rumah-hijab';
+---
+
+<HijabLayout
+  title="Semua Produk"
+  description="Katalog lengkap hijab, gamis, atasan, dan perlengkapan salat Rumah Hijab Aisyah."
+>
+  <section class="wrap py-10">
+    <h1 class="font-display text-3xl sm:text-4xl">Semua produk</h1>
+    <p class="mt-2 text-sm text-ink-muted">
+      {produk.length} barang siap kirim. Saring dulu supaya tidak pusing memilih.
+    </p>
+
+    {/* Penyaring bekerja pada kartu yang sudah tercetak di HTML, jadi daftar
+        tetap lengkap kalau JavaScript gagal dimuat. */}
+    <div class="mt-7 flex flex-col gap-4 border-y border-line py-4">
+      <div
+        class="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        role="group"
+        aria-label="Saring menurut kategori"
+      >
+        <button
+          type="button"
+          data-jenis="semua"
+          aria-pressed="true"
+          class="jenis min-h-11 shrink-0 rounded-control border border-line px-4 text-sm font-medium whitespace-nowrap"
+        >
+          Semua
+        </button>
+        {
+          kategori.map((k) => (
+            <button
+              type="button"
+              data-jenis={k.slug}
+              aria-pressed="false"
+              class="jenis min-h-11 shrink-0 rounded-control border border-line px-4 text-sm font-medium whitespace-nowrap"
+            >
+              {k.nama}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <div
+          class="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          role="group"
+          aria-label="Saring menurut harga"
+        >
+          {
+            [
+              { nilai: 'semua', label: 'Semua harga' },
+              { nilai: 'murah', label: 'Di bawah 100rb' },
+              { nilai: 'sedang', label: '100rb – 250rb' },
+              { nilai: 'mahal', label: 'Di atas 250rb' },
+            ].map((h) => (
+              <button
+                type="button"
+                data-harga={h.nilai}
+                aria-pressed={h.nilai === 'semua' ? 'true' : 'false'}
+                class="harga min-h-11 shrink-0 rounded-control border border-line px-4 text-sm font-medium whitespace-nowrap"
+              >
+                {h.label}
+              </button>
+            ))
+          }
+        </div>
+
+        <div class="ml-auto flex items-center gap-2">
+          <label for="urut" class="text-sm text-ink-muted">Urutkan</label>
+          <select
+            id="urut"
+            class="h-11 rounded-control border border-line bg-surface px-3 text-sm outline-none focus:border-brand"
+          >
+            <option value="terlaris">Terlaris</option>
+            <option value="murah">Harga terendah</option>
+            <option value="mahal">Harga tertinggi</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <p id="hasil" aria-live="polite" class="mt-5 text-sm text-ink-muted">
+      Menampilkan {produk.length} produk.
+    </p>
+
+    <div id="daftar" class="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
+      {
+        produk.map((p, i) => (
+          <div
+            class="produk"
+            data-jenis={p.kategori}
+            data-harga={p.harga}
+            data-terjual={p.terjual}
+          >
+            <ProductCard produk={p} prioritas={i < 4} />
+          </div>
+        ))
+      }
+    </div>
+
+    <p id="kosong" hidden class="mt-6 rounded-card border border-line bg-surface-alt p-8 text-center text-sm">
+      Tidak ada produk di saringan ini.
+      <button type="button" data-reset class="font-semibold text-brand">Tampilkan semua</button>
+    </p>
+  </section>
+</HijabLayout>
+
+<script>
+  const kartu = Array.from(document.querySelectorAll<HTMLElement>('.produk'));
+  const tombolJenis = Array.from(document.querySelectorAll<HTMLButtonElement>('.jenis'));
+  const tombolHarga = Array.from(document.querySelectorAll<HTMLButtonElement>('.harga'));
+  const urut = document.getElementById('urut') as HTMLSelectElement | null;
+  const daftar = document.getElementById('daftar');
+  const hasil = document.getElementById('hasil');
+  const kosong = document.getElementById('kosong');
+
+  let jenisAktif = 'semua';
+  let hargaAktif = 'semua';
+
+  function cocokHarga(h: number) {
+    if (hargaAktif === 'murah') return h < 100000;
+    if (hargaAktif === 'sedang') return h >= 100000 && h <= 250000;
+    if (hargaAktif === 'mahal') return h > 250000;
+    return true;
+  }
+
+  function terapkan() {
+    let tampil = 0;
+    for (const k of kartu) {
+      const cocok =
+        (jenisAktif === 'semua' || k.dataset.jenis === jenisAktif) &&
+        cocokHarga(Number(k.dataset.harga));
+      k.hidden = !cocok;
+      if (cocok) tampil++;
+    }
+
+    // Urutan diubah dengan memindah elemen, bukan menggambar ulang kartunya.
+    if (daftar && urut) {
+      const urutan = [...kartu].sort((a, b) => {
+        if (urut.value === 'murah') return Number(a.dataset.harga) - Number(b.dataset.harga);
+        if (urut.value === 'mahal') return Number(b.dataset.harga) - Number(a.dataset.harga);
+        return Number(b.dataset.terjual) - Number(a.dataset.terjual);
+      });
+      for (const k of urutan) daftar.appendChild(k);
+    }
+
+    if (hasil) hasil.textContent = `Menampilkan ${tampil} produk.`;
+    if (kosong) kosong.hidden = tampil !== 0;
+  }
+
+  function tandai(tombol: HTMLButtonElement[], nilai: string, kunci: 'jenis' | 'harga') {
+    for (const t of tombol) {
+      const aktif = t.dataset[kunci] === nilai;
+      t.setAttribute('aria-pressed', String(aktif));
+      t.classList.toggle('bg-brand', aktif);
+      t.classList.toggle('text-white', aktif);
+      t.classList.toggle('border-brand', aktif);
+    }
+  }
+
+  for (const t of tombolJenis) {
+    t.addEventListener('click', () => {
+      jenisAktif = t.dataset.jenis ?? 'semua';
+      tandai(tombolJenis, jenisAktif, 'jenis');
+      terapkan();
+    });
+  }
+
+  for (const t of tombolHarga) {
+    t.addEventListener('click', () => {
+      hargaAktif = t.dataset.harga ?? 'semua';
+      tandai(tombolHarga, hargaAktif, 'harga');
+      terapkan();
+    });
+  }
+
+  urut?.addEventListener('change', terapkan);
+
+  document.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
+    jenisAktif = 'semua';
+    hargaAktif = 'semua';
+    tandai(tombolJenis, 'semua', 'jenis');
+    tandai(tombolHarga, 'semua', 'harga');
+    terapkan();
+  });
+
+  // Nilai awal dari alamat halaman, supaya tautan kategori langsung menyaring.
+  jenisAktif = new URLSearchParams(location.search).get('jenis') ?? 'semua';
+  tandai(tombolJenis, jenisAktif, 'jenis');
+  tandai(tombolHarga, 'semua', 'harga');
+  terapkan();
+</script>

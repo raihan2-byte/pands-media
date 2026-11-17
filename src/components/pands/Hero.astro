@@ -1,0 +1,55 @@
+---
+import Button from '../ui/Button.astro';
+import { waLink } from '../../site';
+
+interface Props {
+  /** Jumlah jenis sistem di katalog, ditampilkan sebagai bukti kecil. */
+  jumlahJenis: number;
+}
+
+const { jumlahJenis } = Astro.props;
+---
+
+{/* Hero sengaja pendek. Grid demo harus muncul tanpa menggulir jauh. */}
+<section class="wrap pt-10 pb-8 sm:pt-14 sm:pb-10">
+  <p class="text-xs font-semibold tracking-[0.12em] text-brand uppercase">
+    Jasa pembuatan website &amp; aplikasi
+  </p>
+
+  <h1 class="mt-3 max-w-2xl text-3xl sm:text-4xl lg:text-5xl">
+    Usaha kecil juga pantas punya sistem sendiri.
+  </h1>
+
+  <p class="mt-4 max-w-xl text-base text-ink-muted sm:text-lg">
+    Pands Media membangun website dan aplikasi untuk percetakan, toko, warung,
+    dan gudang. Lihat sendiri hasilnya sebelum memutuskan.
+  </p>
+
+  <div class="mt-6 flex flex-wrap items-center gap-3">
+    <Button href="#porto" size="lg" arrow>Lihat portofolio</Button>
+    <Button
+      href={waLink('Halo Pands Media, saya mau tanya soal pembuatan website untuk usaha saya.')}
+      variant="outline"
+      size="lg"
+      target="_blank"
+      rel="noopener"
+    >
+      Tanya dulu
+    </Button>
+  </div>
+
+  <dl class="mt-8 flex flex-wrap gap-x-8 gap-y-3 border-t border-line pt-5 text-sm">
+    <div class="flex items-baseline gap-2">
+      <dt class="text-ink-muted">Jenis sistem</dt>
+      <dd class="tabular font-bold">{jumlahJenis}</dd>
+    </div>
+    <div class="flex items-baseline gap-2">
+      <dt class="text-ink-muted">Mulai dari</dt>
+      <dd class="tabular font-bold">Rp400 rb</dd>
+    </div>
+    <div class="flex items-baseline gap-2">
+      <dt class="text-ink-muted">Pengerjaan</dt>
+      <dd class="font-bold">7&ndash;21 hari</dd>
+    </div>
+  </dl>
+</section>

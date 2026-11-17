@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+import DemoBar from '../components/shared/DemoBar.astro';
+
+interface Props {
+  /** Nama brand fiktif demo, mis. "Kencana Print". */
+  brand: string;
+  /** Token warna di brands.css, mis. "kencana-print". */
+  brandToken: string;
+  /** Judul halaman di dalam demo. */
+  title: string;
+  description?: string;
+  /** Domain palsu yang ditampilkan di bar demo. */
+  domainPalsu?: string;
+  /** Set false untuk layar penuh tanpa bar, mis. saat screenshot. */
+  showBar?: boolean;
+}
+
+const {
+  brand,
+  brandToken,
+  title,
+  description = '',
+  domainPalsu,
+  showBar = true,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="id" data-brand={brandToken}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{`${title} — ${brand}`}</title>
+    <meta name="description" content={description} />
+    <!-- Demo adalah mockup. Jangan sampai terindeks sebagai usaha asli. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="bg-surface text-ink">
+    {showBar && <DemoBar brand={brand} domainPalsu={domainPalsu} />}
+    <div class:list={[showBar && 'pt-11']}>
+      <slot />
+    </div>
+  </body>
+</html>
